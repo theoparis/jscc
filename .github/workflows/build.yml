@@ -21,7 +21,7 @@ jobs:
           wget -O - https://apt.llvm.org/llvm-snapshot.gpg.key | sudo apt-key add -
           sudo apt-add-repository "deb http://apt.llvm.org/$(lsb_release -cs)/ llvm-toolchain-$(lsb_release -cs)-18 main"
           sudo apt update
-          sudo apt install -y clang-20 lld-20 llvm-20 llvm-20-dev llvm-20-tools
+          sudo apt install -y clang-18 lld-18 llvm-18 llvm-18-dev llvm-18-tools
       - name: Build and test
         run: cargo test --all-features
       - name: Lint

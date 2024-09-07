@@ -42,19 +42,6 @@ impl LLVMContext {
                 LLVMAppendBasicBlock(root_function, entry.as_ptr())
             };
 
-            {
-                let mut param_types = vec![LLVMPointerType(LLVMInt8Type(), 0)];
-                let puts_type = LLVMFunctionType(
-                    LLVMInt32TypeInContext(context),
-                    param_types.as_mut_ptr(),
-                    param_types.len() as u32,
-                    0,
-                );
-                let name = CString::new("puts").unwrap();
-                let puts = LLVMAddFunction(module, name.as_ptr(), puts_type);
-                LLVMSetLinkage(puts, llvm_sys::LLVMLinkage::LLVMExternalLinkage);
-            }
-
             LLVMPositionBuilderAtEnd(builder, entry_block);
 
             LLVMContext {
@@ -130,16 +117,22 @@ impl CodeGenerator {
                 boa_ast::expression::literal::Literal::String(string) => {
                     let string_value = interner.resolve_expect(*string).utf8().unwrap();
 
-                    dbg!(string_value);
-
                     Some(self.context.create_string_literal(string_value))
                 }
-                boa_ast::expression::literal::Literal::Num(n) => todo!(),
+                boa_ast::expression::literal::Literal::Num(n) => Some(unsafe {
+                    LLVMConstReal(LLVMDoubleTypeInContext(self.context.context), *n)
+                }),
                 boa_ast::expression::literal::Literal::Int(n) => Some(unsafe {
                     LLVMConstInt(LLVMInt32TypeInContext(self.context.context), *n as u64, 0)
                 }),
                 boa_ast::expression::literal::Literal::BigInt(_) => todo!(),
-                boa_ast::expression::literal::Literal::Bool(_) => todo!(),
+                boa_ast::expression::literal::Literal::Bool(bool) => Some(unsafe {
+                    LLVMConstInt(
+                        LLVMInt1TypeInContext(self.context.context),
+                        if *bool { 1 } else { 0 },
+                        0,
+                    )
+                }),
                 boa_ast::expression::literal::Literal::Null => todo!(),
                 boa_ast::expression::literal::Literal::Undefined => todo!(),
             },
@@ -147,7 +140,7 @@ impl CodeGenerator {
             Expression::ArrayLiteral(_) => todo!(),
             Expression::ObjectLiteral(_) => todo!(),
             Expression::Spread(_) => todo!(),
-            Expression::FunctionExpression(function) => todo!(),
+            Expression::FunctionExpression(_function) => todo!(),
             Expression::ArrowFunction(_) => todo!(),
             Expression::AsyncArrowFunction(_) => todo!(),
             Expression::GeneratorExpression(_) => todo!(),
@@ -239,7 +232,7 @@ impl CodeGenerator {
             boa_ast::Statement::Block(block) => {
                 for statement_list_item in block.statement_list().iter() {
                     match statement_list_item {
-                        boa_ast::StatementListItem::Statement(_) => {
+                        boa_ast::StatementListItem::Statement(statement) => {
                             self.compile_statement(statement, interner);
                         }
                         boa_ast::StatementListItem::Declaration(_) => todo!(),
@@ -255,7 +248,38 @@ impl CodeGenerator {
             }
             boa_ast::Statement::If(_) => todo!(),
             boa_ast::Statement::DoWhileLoop(_) => todo!(),
-            boa_ast::Statement::WhileLoop(_) => todo!(),
+            boa_ast::Statement::WhileLoop(while_loop) => unsafe {
+                let condition_block =
+                    LLVMAppendBasicBlock(self.context.root_function, b"condition\0".as_ptr());
+                let body_block =
+                    LLVMAppendBasicBlock(self.context.root_function, b"body\0".as_ptr());
+
+                let end_block = LLVMAppendBasicBlock(self.context.root_function, b"end\0".as_ptr());
+
+                LLVMBuildBr(self.context.builder, condition_block);
+
+                LLVMPositionBuilderAtEnd(self.context.builder, condition_block);
+
+                let condition = self
+                    .compile_expression(while_loop.condition(), interner)
+                    .unwrap();
+
+                LLVMBuildCondBr(self.context.builder, condition, body_block, end_block);
+
+                LLVMPositionBuilderAtEnd(self.context.builder, body_block);
+
+                let body = while_loop.body();
+
+                LLVMPositionBuilderAtEnd(self.context.builder, body_block);
+
+                self.compile_statement(body, interner);
+
+                LLVMBuildBr(self.context.builder, condition_block);
+
+                LLVMPositionBuilderAtEnd(self.context.builder, end_block);
+
+                None
+            },
             boa_ast::Statement::ForLoop(_) => todo!(),
             boa_ast::Statement::ForInLoop(_) => todo!(),
             boa_ast::Statement::ForOfLoop(_) => todo!(),

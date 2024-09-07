@@ -5,7 +5,7 @@ use boa_interner::Interner;
 use llvm_sys::core::*;
 use llvm_sys::prelude::*;
 use llvm_sys::LLVMLinkage;
-use std::ffi::CString;
+use std::ffi::{c_char, CString};
 
 pub struct LLVMContext {
 	pub context: LLVMContextRef,
@@ -230,7 +230,7 @@ impl CodeGenerator {
 						function.0,
 						args.as_mut_ptr(),
 						args.len() as u32,
-						b"\0".as_ptr(),
+						b"\0".as_ptr() as *const c_char,
 					)
 				})
 			}
@@ -282,16 +282,16 @@ impl CodeGenerator {
 			boa_ast::Statement::WhileLoop(while_loop) => unsafe {
 				let condition_block = LLVMAppendBasicBlock(
 					self.context.root_function,
-					b"condition\0".as_ptr(),
+					b"condition\0".as_ptr() as *const c_char,
 				);
 				let body_block = LLVMAppendBasicBlock(
 					self.context.root_function,
-					b"body\0".as_ptr(),
+					b"body\0".as_ptr() as *const c_char,
 				);
 
 				let end_block = LLVMAppendBasicBlock(
 					self.context.root_function,
-					b"end\0".as_ptr(),
+					b"end\0".as_ptr() as *const c_char,
 				);
 
 				LLVMBuildBr(self.context.builder, condition_block);

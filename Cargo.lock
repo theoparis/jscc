@@ -56,7 +56,7 @@ version = "1.1.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "6d36fc52c7f6c869915e99412912f22093507da8d9e942ceaf66fe4b7c14422a"
 dependencies = [
- "windows-sys",
+ "windows-sys 0.52.0",
 ]
 
 [[package]]
@@ -66,7 +66,7 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "5bf74e1b6e971609db8ca7a9ce79fd5768ab6ae46441c572e46cf596f59e57f8"
 dependencies = [
  "anstyle",
- "windows-sys",
+ "windows-sys 0.52.0",
 ]
 
 [[package]]
@@ -90,7 +90,7 @@ checksum = "b048fb63fd8b5923fc5aa7b340d8e156aec7ec02f0c78fa8a6ddc2613f6f71de"
 [[package]]
 name = "boa_ast"
 version = "0.19.0"
-source = "git+https://github.com/boa-dev/boa#0f282f5bc3538103af8a2b939469fd8736b23594"
+source = "git+https://github.com/boa-dev/boa#b08610afd94ef9bcb9525c1086663322fc9c595a"
 dependencies = [
  "bitflags",
  "boa_interner",
@@ -103,7 +103,7 @@ dependencies = [
 [[package]]
 name = "boa_gc"
 version = "0.19.0"
-source = "git+https://github.com/boa-dev/boa#0f282f5bc3538103af8a2b939469fd8736b23594"
+source = "git+https://github.com/boa-dev/boa#b08610afd94ef9bcb9525c1086663322fc9c595a"
 dependencies = [
  "boa_macros",
  "boa_profiler",
@@ -113,7 +113,7 @@ dependencies = [
 [[package]]
 name = "boa_interner"
 version = "0.19.0"
-source = "git+https://github.com/boa-dev/boa#0f282f5bc3538103af8a2b939469fd8736b23594"
+source = "git+https://github.com/boa-dev/boa#b08610afd94ef9bcb9525c1086663322fc9c595a"
 dependencies = [
  "boa_gc",
  "boa_macros",
@@ -128,7 +128,7 @@ dependencies = [
 [[package]]
 name = "boa_macros"
 version = "0.19.0"
-source = "git+https://github.com/boa-dev/boa#0f282f5bc3538103af8a2b939469fd8736b23594"
+source = "git+https://github.com/boa-dev/boa#b08610afd94ef9bcb9525c1086663322fc9c595a"
 dependencies = [
  "proc-macro2",
  "quote",
@@ -139,7 +139,7 @@ dependencies = [
 [[package]]
 name = "boa_parser"
 version = "0.19.0"
-source = "git+https://github.com/boa-dev/boa#0f282f5bc3538103af8a2b939469fd8736b23594"
+source = "git+https://github.com/boa-dev/boa#b08610afd94ef9bcb9525c1086663322fc9c595a"
 dependencies = [
  "bitflags",
  "boa_ast",
@@ -157,7 +157,7 @@ dependencies = [
 [[package]]
 name = "boa_profiler"
 version = "0.19.0"
-source = "git+https://github.com/boa-dev/boa#0f282f5bc3538103af8a2b939469fd8736b23594"
+source = "git+https://github.com/boa-dev/boa#b08610afd94ef9bcb9525c1086663322fc9c595a"
 
 [[package]]
 name = "cc"
@@ -173,6 +173,16 @@ name = "cfg-if"
 version = "1.0.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "baf1de4339761588bc0619e3cbc0120ee582ebb74b53b4efbf79117bd2da40fd"
+
+[[package]]
+name = "clang-sys"
+version = "1.8.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "0b023947811758c97c59bf9d1c188fd619ad4718dcaa767947df1cadb14f39f4"
+dependencies = [
+ "glob",
+ "libc",
+]
 
 [[package]]
 name = "clap"
@@ -238,10 +248,32 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "5443807d6dff69373d433ab9ef5378ad8df50ca6298caf15de6e52e24aaf54d5"
 
 [[package]]
+name = "errno"
+version = "0.3.9"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "534c5cf6194dfab3db3242765c03bbe257cf92f22b38f6bc0c58d59108a820ba"
+dependencies = [
+ "libc",
+ "windows-sys 0.52.0",
+]
+
+[[package]]
 name = "fast-float"
 version = "0.2.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "95765f67b4b18863968b4a1bd5bb576f732b29a4a28c7cd84c09fa3e2875f33c"
+
+[[package]]
+name = "fastrand"
+version = "2.1.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "e8c02a5121d4ea3eb16a80748c74f5549a5665e4c21333c6098f283870fbdea6"
+
+[[package]]
+name = "glob"
+version = "0.3.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "d2fabcfbdc87f4758337ca535fb41a6d701b65693ce38287d856d1674551ec9b"
 
 [[package]]
 name = "hashbrown"
@@ -403,6 +435,12 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "d8adc4bb1803a324070e64a98ae98f38934d91957a99cfb3a43dcbc01bc56439"
 
 [[package]]
+name = "linux-raw-sys"
+version = "0.4.14"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "78b3ae25bc7c8c38cec158d1f2757ee79e9b3740fbc7ccf0e59e4b08d793fa89"
+
+[[package]]
 name = "litemap"
 version = "0.7.3"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -410,16 +448,16 @@ checksum = "643cb0b8d4fcc284004d5fd0d67ccf61dfffadb7f75e1e71bc420f4688a3a704"
 
 [[package]]
 name = "llvm-sys"
-version = "181.1.1"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "1d255b36907416971229095a8465c0b69f5f1c6fb8421b6dcdbb64eb47e1be90"
+version = "1.0.0"
 dependencies = [
  "anyhow",
  "cc",
+ "clang-sys",
  "lazy_static",
  "libc",
  "regex-lite",
  "semver",
+ "tempfile",
 ]
 
 [[package]]
@@ -560,6 +598,19 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "583034fd73374156e66797ed8e5b0d5690409c9226b22d87cb7f19821c05d152"
 
 [[package]]
+name = "rustix"
+version = "0.38.36"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "3f55e80d50763938498dd5ebb18647174e0c76dc38c5505294bb224624f30f36"
+dependencies = [
+ "bitflags",
+ "errno",
+ "libc",
+ "linux-raw-sys",
+ "windows-sys 0.52.0",
+]
+
+[[package]]
 name = "semver"
 version = "1.0.23"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -638,6 +689,19 @@ dependencies = [
 ]
 
 [[package]]
+name = "tempfile"
+version = "3.12.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "04cbcdd0c794ebb0d4cf35e88edd2f7d2c4c3e9a5a6dab322839b321c6a87a64"
+dependencies = [
+ "cfg-if",
+ "fastrand",
+ "once_cell",
+ "rustix",
+ "windows-sys 0.59.0",
+]
+
+[[package]]
 name = "tinystr"
 version = "0.7.6"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -670,6 +734,15 @@ name = "windows-sys"
 version = "0.52.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "282be5f36a8ce781fad8c8ae18fa3f9beff57ec1b52cb3de0789201425d9a33d"
+dependencies = [
+ "windows-targets",
+]
+
+[[package]]
+name = "windows-sys"
+version = "0.59.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "1e38bc4d79ed67fd075bcc251a1c39b32a1776bbe92e5bef1f0bf1f8c531853b"
 dependencies = [
  "windows-targets",
 ]

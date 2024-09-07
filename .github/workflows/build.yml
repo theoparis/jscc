@@ -1,0 +1,28 @@
+name: Build
+on:
+  push:
+    branches: main
+  pull_request:
+
+jobs:
+  test:
+    name: Build and Check 
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332
+      - uses: dtolnay/rust-toolchain@master
+        with:
+          toolchain: nightly
+          components: clippy, rustfmt
+      - name: Install LLVM and Clang
+        run: |
+          sudo apt update
+          sudo apt install -y wget gnupg software-properties-common lsb-release
+          wget -O - https://apt.llvm.org/llvm-snapshot.gpg.key | sudo apt-key add -
+          sudo apt-add-repository "deb http://apt.llvm.org/$(lsb_release -cs)/ llvm-toolchain-$(lsb_release -cs) main"
+          sudo apt update
+          sudo apt install -y clang-20 libclang-20-dev lld-20 llvm-20 llvm-20-dev llvm-20-tools libpolly-20-dev libzstd-dev
+      - name: Build and test
+        run: LLVM_SYS_PREFIX=/usr/lib/llvm-20 cargo test --all-features
+      - name: Lint
+        run: LLVM_SYS_PREFIX=/usr/lib/llvm-20 cargo clippy -- -Dwarnings
